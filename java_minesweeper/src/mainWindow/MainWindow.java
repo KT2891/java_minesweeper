@@ -103,11 +103,13 @@ public class MainWindow {
     });
 	}
 	
+//	ゲームクリア判定
+//	全てのパネルが開いているか、フラグが立っている場合クリア
 	public void clearCheck() {
 		int openCell = 0;
 		for(int i = 0; i < this.lows; i++) {
 			for(int j = 0; j < this.cols; j++) {
-				if(!grid.getCell(i, j).getOpen() && !grid.getCell(i, j).getFlag()) {
+				if(!grid.getCell(i, j).getOpen() && !grid.getCell(i, j).getMine()) {
 					openCell ++;
 				}
 			}
@@ -118,11 +120,13 @@ public class MainWindow {
 		}
 	}
 	
+//	画面表示用
 	public void show(int x, int y) {
 		this.frame.setVisible(true);
 		this.init(x, y);
 	}
 	
+//	ゲーム初期化
 	public void init(int x, int y) {
 		this.state = Status.Done;
 		this.grid = new Grid(x ,y);
@@ -135,6 +139,8 @@ public class MainWindow {
 		}
 	}
 	
+//	ゲームオーバー
+//	全てのパネルをめくる
 	public void gameOver() {
 		this.state = Status.End;
 		this.gameLabel.setText("そこは爆弾です。");
@@ -194,35 +200,41 @@ public class MainWindow {
 	
 //	右クリックのアクション
 	public void actionFlag(int x, int y) {
+		//		開いている場合とゲーム終了時に無効
 		if (this.grid.getCell(x, y).getOpen() || 	this.state == Status.End )
 			return;
-		
+		//		フラグの状態で分岐
 		if (this.grid.getCell(x, y).getFlag()) {
 			this.delFlag(x, y);
 		} else {
 			this.setFlag(x, y);
 			this.clearCheck();
 		}
+		//		残り爆弾数とフラグの数を表示
 		this.mineLabel.setText(String.format("%s", this.grid.countMines() - this.grid.countFlags()));
 		this.flagLabel.setText(String.format("%s", this.grid.countFlags()));
 	}
 	
+//	フラグセット
 	public void setFlag(int x, int y) {
 		this.grid.getCell(x, y).setFlagged(true);
 		this.cellButton[x][y].setText("✓");
 		this.cellButton[x][y].setEnabled(false);
 	}
 	
+//	フラグ除去
 	public void delFlag(int x, int y) {
 		this.grid.getCell(x, y).setFlagged(false);
 		this.cellButton[x][y].setText("");
 		this.cellButton[x][y].setEnabled(true);
 	}
 
+//	ボタン色更新
 	public void updateButton(int x, int y) {
 		this.cellButton[x][y].setBackground(Color.WHITE);
 		this.cellButton[x][y].setForeground(Color.BLACK);
 	}
+//	周囲の爆弾数を表示
 	public void showCount(int x, int y) {
 		this.cellButton[x][y].setText(String.format("%s", this.grid.getCount(x, y)));
 	}
