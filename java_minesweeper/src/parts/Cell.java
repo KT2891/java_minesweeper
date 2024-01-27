@@ -35,19 +35,19 @@ public class Cell {
     this.adjacentMines = adjacentMines;
   }
   
-  public boolean getMine(boolean isMine) {
+  public boolean getMine() {
     return isMine;
 	}
 	
-	public boolean getOpen(boolean isOpen) {
+	public boolean getOpen() {
 	  return isOpen;
 	}
 	
-	public boolean getFlagged(boolean isFlagged) {
+	public boolean getFlag() {
 		return isFlagged;
 	}
 	
-	public int getAdjacentMines(int adjacentMines) {
+	public int getAdjacentMines() {
 	  return adjacentMines;
 	}
 
