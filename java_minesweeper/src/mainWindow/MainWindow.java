@@ -49,7 +49,7 @@ public class MainWindow {
 		canvas.setLayout(null);
 		
 		this.gameLabel = new JLabel("ゲーム進行中");
-		this.gameLabel.setBounds(150, 20, 150, 20);
+		this.gameLabel.setBounds(150, 20, 250, 20);
 		canvas.add(this.gameLabel);
 		
 		this.resetButton = new JButton("One more");
@@ -82,6 +82,7 @@ public class MainWindow {
 	}
 	
 	public void setButton(int i, int j) {
+		this.cellButton[i][j].setEnabled(true);
 		this.cellButton[i][j].setText("");
 		this.cellButton[i][j].setBounds(100 + i*52, 100 + j*52, 50, 50);
 		this.cellButton[i][j].setForeground(Color.WHITE);
@@ -100,6 +101,21 @@ public class MainWindow {
         }
       }
     });
+	}
+	
+	public void clearCheck() {
+		int openCell = 0;
+		for(int i = 0; i < this.lows; i++) {
+			for(int j = 0; j < this.cols; j++) {
+				if(!grid.getCell(i, j).getOpen() && !grid.getCell(i, j).getFlag()) {
+					openCell ++;
+				}
+			}
+		}
+		if ((this.grid.countMines() - this.grid.countFlags() == 0) && openCell == 0) {
+			this.state = Status.End;
+			this.gameLabel.setText("ゲームクリア！ 全ての爆弾を処理しました。");
+		}
 	}
 	
 	public void show(int x, int y) {
@@ -125,12 +141,13 @@ public class MainWindow {
 		for(int i = 0; i < this.lows; i++) {
 			for(int j = 0; j < this.cols; j++) {
 				this.updateButton(i, j);
-				if (i >= 0 && i < this.lows && j >= 0 && j < this.cols) {
-					if(this.grid.getCell(i, j).getMine()) {
-						this.cellButton[i][j].setText("X");
-					} else if (this.grid.getCount(i, j) != 0) {
-						this.showCount(i, j);
-					}
+				this.cellButton[i][j].setEnabled(true);
+				if(this.grid.getCell(i, j).getFlag())
+					this.cellButton[i][j].setForeground(Color.RED);
+				if(this.grid.getCell(i, j).getMine()) {
+					this.cellButton[i][j].setText("X");
+				} else if (this.grid.getCount(i, j) != 0) {
+					this.showCount(i, j);
 				}
 			}
 		}
@@ -140,7 +157,7 @@ public class MainWindow {
 //	爆弾の場合はゲームオーバーとして全ての爆弾やカウントを表示
 //	爆弾でない場合はそのマスのカウントを表示
 	public void clickCell(int x, int y) {
-		if (this.grid.getCell(x, y).getOpen() || 	this.state == Status.End )
+		if (this.grid.getCell(x, y).getOpen() || this.grid.getCell(x, y).getFlag() || 	this.state == Status.End )
 			return;
 		
 		if(this.grid.getCell(x, y).getMine() ) {
@@ -150,7 +167,28 @@ public class MainWindow {
 			this.updateButton(x, y);
 			this.showCount(x, y);
 		} else {
-			this.updateButton(x, y);
+			this.openZero(x, y);
+		}
+		this.clearCheck();
+	}
+	
+	public void openZero(int x, int y) {
+		if (this.grid.getCount(x, y) != 0) {
+			return;
+		}
+		
+    this.grid.getCell(x, y).setOpen(true);
+    this.updateButton(x, y);
+    
+		for(int i = x - 1; i <= x + 1; i++) {
+			for(int j = y - 1; j <= y + 1; j++) {
+				if (i >= 0 && i < this.lows && j >= 0 && j < this.cols) {
+					if (i != x || j != y) {
+						this.updateButton(i, j);
+						this.clickCell(i, j);
+					}
+				}
+			}
 		}
 	}
 	
@@ -163,18 +201,22 @@ public class MainWindow {
 			this.delFlag(x, y);
 		} else {
 			this.setFlag(x, y);
+			this.clearCheck();
 		}
+		this.mineLabel.setText(String.format("%s", this.grid.countMines() - this.grid.countFlags()));
 		this.flagLabel.setText(String.format("%s", this.grid.countFlags()));
 	}
 	
 	public void setFlag(int x, int y) {
 		this.grid.getCell(x, y).setFlagged(true);
 		this.cellButton[x][y].setText("✓");
+		this.cellButton[x][y].setEnabled(false);
 	}
 	
 	public void delFlag(int x, int y) {
 		this.grid.getCell(x, y).setFlagged(false);
 		this.cellButton[x][y].setText("");
+		this.cellButton[x][y].setEnabled(true);
 	}
 
 	public void updateButton(int x, int y) {

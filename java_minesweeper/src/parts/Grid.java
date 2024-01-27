@@ -23,6 +23,14 @@ public class Grid {
 				cells[i][j] = new Cell(i , j);
 	}
 	
+	public void resetCell() {
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				cells[i][j] = new Cell(i , j);
+			}
+		}
+	}
+	
 //	ランダムに爆弾を配置
 //	とりあえず面積の10%を爆弾に設定
 	public void randomSetCell(int x, int y) {
