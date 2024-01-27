@@ -7,10 +7,10 @@ public class Cell {
   private int adjacentMines;
 
   public Cell() {
-      this.isMine = false;
-      this.isOpen = false;
-      this.isFlagged = false;
-      this.adjacentMines = 0;
+    this.isMine = false;
+    this.isOpen = false;
+    this.isFlagged = false;
+    this.adjacentMines = 0;
   }
 
   // セッター、ゲッターメソッドなど、他の必要なメソッド
@@ -46,6 +46,4 @@ public class Cell {
 	public int getAdjacentMines() {
 	  return adjacentMines;
 	}
-
-  // 他のメソッド（例：セルを開く、フラグを設定するなど）
 }
