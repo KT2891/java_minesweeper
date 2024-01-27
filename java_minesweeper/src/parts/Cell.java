@@ -1,16 +1,12 @@
 package parts;
 
 public class Cell {
-  private int row;
-  private int col;
   private boolean isMine;
   private boolean isOpen;
   private boolean isFlagged;
   private int adjacentMines;
 
-  public Cell(int row, int col) {
-      this.row = row;
-      this.col = col;
+  public Cell() {
       this.isMine = false;
       this.isOpen = false;
       this.isFlagged = false;

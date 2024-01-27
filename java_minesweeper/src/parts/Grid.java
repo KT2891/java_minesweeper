@@ -20,13 +20,13 @@ public class Grid {
 	public void initializeGrid() {
 		for (int i = 0; i < rows; i++)
 			for (int j = 0; j < cols; j++)
-				cells[i][j] = new Cell(i , j);
+				cells[i][j] = new Cell();
 	}
 	
 	public void resetCell() {
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
-				cells[i][j] = new Cell(i , j);
+				cells[i][j] = new Cell();
 			}
 		}
 	}
